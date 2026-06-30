@@ -189,7 +189,7 @@ export function computeCompatibility(
   const subscores: Subscore[] = (Object.keys(blends) as SubscoreKey[]).map((key) => {
     const meta = SUBSCORE_META[key];
     const sub = key === 'growth' ? growthBand(blends.growth) : toBanded(blends[key]);
-    const copy = subscoreCopy(key, sub, ctx, rng);
+    const copy = subscoreCopy(key, sub, ctx);
     return { key, label: meta.label, icon: meta.icon, score: sub, teaser: copy.teaser, detail: copy.detail };
   });
 

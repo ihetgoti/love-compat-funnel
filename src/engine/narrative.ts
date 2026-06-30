@@ -119,7 +119,6 @@ export function subscoreCopy(
   key: SubscoreKey,
   score: number,
   ctx: NarrativeCtx,
-  rng: RNG,
 ): { teaser: string; detail: string } {
   const P = firstName(ctx.partner, 'them');
   const high = score >= 84;

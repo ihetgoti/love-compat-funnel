@@ -59,7 +59,6 @@ export function track(event: FunnelEvent, props: Props = {}): void {
   if (typeof window === 'undefined') return;
 
   if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
     console.debug(`%c[track] ${event}`, 'color:#ff5d8f', props);
   }
 
