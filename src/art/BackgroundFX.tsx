@@ -1,6 +1,7 @@
 'use client';
 
 import { Particles } from './Particles';
+import { useIsClient } from '@/lib/useIsClient';
 
 type Intensity = 'calm' | 'normal' | 'intense';
 
@@ -9,9 +10,13 @@ interface BackgroundFXProps {
 }
 
 /** Full-screen animated romantic backdrop: drifting aurora blobs + sparkles.
- *  Sits behind all app content. Reduced-motion users get a calm static version. */
+ *  Client-only (its randomized inline styles must not be hydration-compared).
+ *  The body's CSS gradient covers the first paint, so there's no flash. */
 export function BackgroundFX({ intensity = 'normal' }: BackgroundFXProps) {
+  const isClient = useIsClient();
   const sparkleCount = intensity === 'intense' ? 22 : intensity === 'calm' ? 9 : 14;
+
+  if (!isClient) return <div aria-hidden className="fixed inset-0 -z-10" />;
 
   return (
     <div aria-hidden className="fixed inset-0 -z-10 overflow-hidden">

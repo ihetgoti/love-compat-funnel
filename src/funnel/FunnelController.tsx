@@ -90,9 +90,7 @@ export function FunnelController() {
       <>
         <BackgroundFX intensity="calm" />
         <div className="flex min-h-[100dvh] items-center justify-center">
-          <div className="anim-glow text-5xl" style={{ filter: 'drop-shadow(0 0 18px rgba(255,93,143,0.7))' }}>
-            💞
-          </div>
+          <div className="anim-glow drop-glow-rose text-5xl">💞</div>
         </div>
       </>
     );
