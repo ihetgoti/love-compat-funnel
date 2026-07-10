@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { Question } from '@/content/questions';
 import { SceneShell } from '@/components/ui/SceneShell';
 import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
 import { ChoiceCard } from '@/components/ui/ChoiceCard';
 import { HeartScale } from '@/components/ui/HeartScale';
-import { MascotBeat } from '@/art/MascotBeat';
+import { MascotInterstitial } from '@/art/MascotInterstitial';
 import { useQuizStore } from '@/store/useQuizStore';
 import { staggerContainer, riseItem } from '@/design/motion';
 import { track } from '@/analytics/track';
@@ -19,7 +19,7 @@ export function EmotionQuestion({ question }: { question: Question }) {
   const setAnswer = useQuizStore((s) => s.setAnswer);
   const next = useQuizStore((s) => s.next);
   const value = answers[question.id];
-  const [beatShown, setBeatShown] = useState(false);
+  const [beatActive, setBeatActive] = useState(false);
   const [locked, setLocked] = useState(false);
 
   const selectSingle = (val: string) => {
@@ -28,9 +28,8 @@ export function EmotionQuestion({ question }: { question: Question }) {
     setAnswer(question.id, val);
     track('AnswerQuestion', { q: question.id, a: val });
     if (question.beat) {
-      setBeatShown(true);
-      haptic('success');
-      setTimeout(() => next(), 1650);
+      // Full-screen comic interstitial handles the advance (3s or tap).
+      setBeatActive(true);
     } else {
       haptic('select');
       setTimeout(() => next(), 380);
@@ -81,16 +80,6 @@ export function EmotionQuestion({ question }: { question: Question }) {
         </div>
       )}
 
-      <AnimatePresence>
-        {beatShown && question.beat ? (
-          <motion.div className="mt-7" exit={{ opacity: 0 }}>
-            <MascotBeat mascot={question.beat.mascot} mood={question.beat.mood}>
-              {question.beat.line}
-            </MascotBeat>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
       {question.kind === 'scale' ? (
         <StickyCta>
           <Button
@@ -105,6 +94,16 @@ export function EmotionQuestion({ question }: { question: Question }) {
             Continue
           </Button>
         </StickyCta>
+      ) : null}
+
+      {question.beat ? (
+        <MascotInterstitial
+          show={beatActive}
+          mascot={question.beat.mascot}
+          mood={question.beat.mood}
+          message={question.beat.line}
+          onDismiss={next}
+        />
       ) : null}
     </SceneShell>
   );

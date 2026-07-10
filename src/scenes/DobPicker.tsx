@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SceneShell } from '@/components/ui/SceneShell';
 import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
 import { WheelColumn, type WheelItem } from '@/components/ui/WheelPicker';
 import { Avatar } from '@/art/Avatar';
-import { MascotBeat } from '@/art/MascotBeat';
+import { MascotInterstitial } from '@/art/MascotInterstitial';
 import { useQuizStore } from '@/store/useQuizStore';
 import { getRelationshipType } from '@/content/relationshipTypes';
 import { getZodiac } from '@/engine/zodiac';
@@ -135,6 +135,11 @@ export function DobPicker() {
   const sign = getZodiac(toISO(date));
   const name = isYou ? firstName(you.name, 'You') : firstName(partner.name, rt?.partnerLabel ?? 'Them');
 
+  const finishToAnalysis = useCallback(() => {
+    compute();
+    next();
+  }, [compute, next]);
+
   const confirm = () => {
     if (advancing) return;
     haptic('success');
@@ -153,12 +158,13 @@ export function DobPicker() {
         results: null,
       });
       const ev = pickEvent(ctx, 'afterDob', []);
-      setEvent(ev);
       track('ProfileComplete');
-      setTimeout(() => {
-        compute();
-        next();
-      }, ev ? 2100 : 700);
+      if (ev) {
+        // Full-screen comic interstitial handles the advance (3s or tap).
+        setEvent(ev);
+      } else {
+        setTimeout(finishToAnalysis, 700);
+      }
     }
   };
 
@@ -200,20 +206,6 @@ export function DobPicker() {
           </motion.div>
         </AnimatePresence>
 
-        <AnimatePresence>
-          {event ? (
-            <motion.div
-              className="mt-5 flex justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <MascotBeat mascot={event.mascot} mood={event.mood}>
-                {event.message}
-              </MascotBeat>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
       </div>
 
       <StickyCta>
@@ -221,6 +213,14 @@ export function DobPicker() {
           {isYou ? 'Continue →' : 'Reveal our connection ✨'}
         </Button>
       </StickyCta>
+
+      <MascotInterstitial
+        show={!!event}
+        mascot={event?.mascot ?? 'cupid'}
+        mood={event?.mood}
+        message={event?.message ?? ''}
+        onDismiss={finishToAnalysis}
+      />
     </SceneShell>
   );
 }

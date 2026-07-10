@@ -8,7 +8,7 @@ const BUBBLE_BG = 'rgba(36,18,64,0.94)';
 
 interface SpeechBubbleProps {
   children: React.ReactNode;
-  tail?: 'left' | 'right' | 'bottom' | 'none';
+  tail?: 'left' | 'right' | 'bottom' | 'top' | 'none';
   className?: string;
 }
 
@@ -33,15 +33,18 @@ export function SpeechBubble({ children, tail = 'bottom', className }: SpeechBub
           className={cn(
             'absolute h-0 w-0',
             tail === 'bottom' && 'bottom-[-10px] left-1/2 -translate-x-1/2 border-l-[9px] border-r-[9px] border-t-[11px] border-l-transparent border-r-transparent',
+            tail === 'top' && 'top-[-10px] left-1/2 -translate-x-1/2 border-l-[9px] border-r-[9px] border-b-[11px] border-l-transparent border-r-transparent',
             tail === 'left' && 'left-[-10px] top-7 border-b-[9px] border-r-[11px] border-t-[9px] border-b-transparent border-t-transparent',
             tail === 'right' && 'right-[-10px] top-7 border-b-[9px] border-l-[11px] border-t-[9px] border-b-transparent border-t-transparent',
           )}
           style={
             tail === 'bottom'
               ? { borderTopColor: BUBBLE_BG }
-              : tail === 'left'
-                ? { borderRightColor: BUBBLE_BG }
-                : { borderLeftColor: BUBBLE_BG }
+              : tail === 'top'
+                ? { borderBottomColor: BUBBLE_BG }
+                : tail === 'left'
+                  ? { borderRightColor: BUBBLE_BG }
+                  : { borderLeftColor: BUBBLE_BG }
           }
         />
       )}
