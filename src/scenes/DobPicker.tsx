@@ -179,9 +179,11 @@ export function DobPicker() {
             exit={{ opacity: 0, x: -36 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="mb-4 flex flex-col items-center text-center">
-              <Avatar name={name} element={sign.element} glyph={sign.glyph} size={76} />
-              <h1 className="mt-3 text-[1.5rem] font-extrabold leading-tight">
+            <div className="mb-6 flex flex-col items-center text-center">
+              <div className="comic-panel mb-4 overflow-hidden rounded-xl border-8 w-full max-w-[200px]">
+                <img src="/comic_zodiac.png" alt="Comic zodiac" className="w-full h-auto object-cover" />
+              </div>
+              <div className="speech-bubble text-black font-bold text-[18px] uppercase max-w-sm">
                 {isYou ? (
                   <>
                     When were <span className="romance-text">you</span> born?
@@ -191,8 +193,8 @@ export function DobPicker() {
                     And <span className="romance-text">{name}</span>?
                   </>
                 )}
-              </h1>
-              <p className="mt-1 text-sm text-muted">Spin the wheels — your stars are listening ✨</p>
+                <p className="mt-2 text-xs font-semibold">Spin the wheels — your stars are listening ✨</p>
+              </div>
             </div>
 
             <div className="relative">

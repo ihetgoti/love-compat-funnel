@@ -5,12 +5,22 @@ import { motion } from 'framer-motion';
 import { RELATIONSHIP_TYPES, type RelationshipTypeId } from '@/content/relationshipTypes';
 import { ChoiceCard } from '@/components/ui/ChoiceCard';
 import { SceneShell } from '@/components/ui/SceneShell';
-import { Mascot } from '@/art/Mascot';
-import { SpeechBubble } from '@/art/SpeechBubble';
 import { useQuizStore } from '@/store/useQuizStore';
 import { staggerContainer, riseItem } from '@/design/motion';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
+
+const getImageForRel = (id: RelationshipTypeId) => {
+  if (id === 'crush') return '/rel_crush_comic.png';
+  if (id === 'married') return '/rel_married_comic.png';
+  if (id === 'ex') return '/rel_ex_comic.png';
+  if (id === 'engaged') return '/rel_engaged_comic.png';
+  if (id === 'partner') return '/rel_partner_comic.png';
+  if (id === 'secret') return '/rel_secret_comic.png';
+  if (id === 'like') return '/rel_like_comic.png';
+  if (id === 'curious') return '/comic_thinking.png';
+  return undefined;
+};
 
 export function RelationshipSelect() {
   const setRelationship = useQuizStore((s) => s.setRelationship);
@@ -31,40 +41,45 @@ export function RelationshipSelect() {
 
   return (
     <SceneShell>
-      <motion.div variants={riseItem} initial="initial" animate="animate" className="mb-3 flex items-end gap-2">
-        <Mascot name="cupid" mood="wink" size={62} />
-        <SpeechBubble tail="left" className="mb-1">
-          Hi, I’m Cupid 💘 Let’s discover your match…
-        </SpeechBubble>
+      <motion.div variants={riseItem} initial="initial" animate="animate" className="mb-6 flex flex-col items-center">
+        <div className="comic-panel mb-4 overflow-hidden rounded-xl border-8 w-full max-w-sm">
+           <img src="/relationship_comic.png" alt="Happy couple comic" className="w-full h-auto object-cover" />
+        </div>
+        <div className="speech-bubble text-black font-bold text-xl uppercase max-w-xs">
+          Let's discover your match!
+        </div>
       </motion.div>
 
       <motion.h1
         variants={riseItem}
         initial="initial"
         animate="animate"
-        className="text-[1.7rem] font-extrabold leading-tight"
+        className="text-[2rem] font-extrabold leading-tight text-center"
       >
-        Who would you like to check <span className="romance-text">compatibility</span> with?
+        WHO ARE YOU CHECKING <br/><span className="text-[var(--color-comic-red)]">COMPATIBILITY</span> WITH?
       </motion.h1>
-      <p className="mt-1.5 text-sm text-muted">Tap one to begin — this stays completely private. 🔒</p>
 
       <motion.div
         variants={staggerContainer}
         initial="initial"
         animate="animate"
-        className="mt-5 grid grid-cols-2 gap-3"
+        className="mt-6 grid grid-cols-2 gap-4"
       >
-        {RELATIONSHIP_TYPES.map((rt) => (
-          <ChoiceCard
-            key={rt.id}
-            layout="tile"
-            emoji={rt.emoji}
-            label={rt.label}
-            subtitle={rt.subtitle}
-            selected={picked === rt.id}
-            onSelect={() => choose(rt.id)}
-          />
-        ))}
+        {RELATIONSHIP_TYPES.map((rt) => {
+          const bgImage = getImageForRel(rt.id);
+          return (
+            <ChoiceCard
+              key={rt.id}
+              layout={bgImage ? 'image' : 'tile'}
+              emoji={!bgImage ? rt.emoji : undefined}
+              label={rt.label}
+              subtitle={!bgImage ? rt.subtitle : undefined}
+              selected={picked === rt.id}
+              onSelect={() => choose(rt.id)}
+              bgImage={bgImage}
+            />
+          );
+        })}
       </motion.div>
     </SceneShell>
   );

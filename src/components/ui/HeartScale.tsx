@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { haptic } from '@/design/haptics';
+import { cn } from '@/lib/cn';
 
 interface HeartScaleProps {
   value: number; // 0 = unset, 1..5
@@ -29,19 +30,22 @@ export function HeartScale({ value, onChange, lowLabel, highLabel }: HeartScaleP
               className="tap p-1.5"
             >
               <motion.span
-                animate={{ scale: filled ? 1.12 : 1, opacity: filled ? 1 : 0.45 }}
+                animate={{ scale: filled ? 1.12 : 1 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 16 }}
-                className="block text-[2.6rem] leading-none"
-                style={filled ? { filter: 'drop-shadow(0 0 10px rgba(255,93,143,0.7))' } : undefined}
+                className={cn(
+                  "block text-[2.6rem] leading-none transition-all",
+                  filled ? "" : "opacity-60 grayscale"
+                )}
+                style={{ filter: 'drop-shadow(3px 3px 0px #000)' }}
               >
-                {filled ? '❤️' : '🤍'}
+                ❤️
               </motion.span>
             </motion.button>
           );
         })}
       </div>
       {lowLabel || highLabel ? (
-        <div className="mt-2 flex justify-between px-2 text-xs font-medium text-muted">
+        <div className="mt-4 flex justify-between px-2 text-sm font-black uppercase tracking-wider text-black">
           <span>{lowLabel}</span>
           <span>{highLabel}</span>
         </div>

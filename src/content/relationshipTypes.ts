@@ -1,6 +1,6 @@
 export type RelationshipTypeId =
   | 'married' | 'engaged' | 'partner' | 'crush' | 'secret'
-  | 'like' | 'friend' | 'ex' | 'future' | 'curious';
+  | 'like' | 'ex' | 'curious';
 
 export type Accent = 'rose' | 'gold' | 'lavender' | 'aura' | 'blush';
 
@@ -21,9 +21,7 @@ export const RELATIONSHIP_TYPES: RelationshipType[] = [
   { id: 'crush', emoji: '😍', label: 'Secret Crush', partnerLabel: 'Your Crush', nameLabel: "Your Crush's Name", subtitle: 'Butterflies included', accent: 'blush' },
   { id: 'secret', emoji: '🤫', label: 'Secret Relationship', partnerLabel: 'Your Secret Love', nameLabel: 'Their Name', subtitle: 'Just between us', accent: 'lavender' },
   { id: 'like', emoji: '💖', label: 'Someone I Like', partnerLabel: 'Someone Special', nameLabel: 'Their Name', subtitle: 'Could be something', accent: 'blush' },
-  { id: 'friend', emoji: '👫', label: 'Friend / Best Friend', partnerLabel: 'Your Friend', nameLabel: "Your Friend's Name", subtitle: 'More than friends?', accent: 'aura' },
   { id: 'ex', emoji: '💔', label: 'Ex Partner', partnerLabel: 'Your Ex', nameLabel: "Your Ex's Name", subtitle: 'Some stories aren’t over', accent: 'lavender' },
-  { id: 'future', emoji: '🔮', label: 'Future Life Partner', partnerLabel: 'Your Future Love', nameLabel: 'Their Name', subtitle: 'The one you’re waiting for', accent: 'gold' },
   { id: 'curious', emoji: '👀', label: 'Just Curious', partnerLabel: 'That Person', nameLabel: 'Their Name', subtitle: 'No reason needed', accent: 'aura' },
 ];
 

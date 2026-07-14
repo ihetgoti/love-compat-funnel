@@ -2,31 +2,23 @@
 
 /* ----------------------------------------------------------------------------
    Design tokens — mirrored in src/design/tokens.ts for runtime art code.
-   Tailwind v4 turns each --color-* into bg-/text-/border-/from-/to- utilities.
 ---------------------------------------------------------------------------- */
 @theme {
-  --color-ink: #0e0820;
-  --color-night: #160d28;
-  --color-night-2: #241141;
-  --color-plum: #3a1d5e;
-  --color-plum-soft: #4a2772;
-  --color-rose: #ff5d8f;
-  --color-rose-deep: #e23e74;
-  --color-blush: #ffb3c8;
-  --color-gold: #ffd27d;
-  --color-gold-deep: #f5b54a;
-  --color-starlight: #fff4fb;
-  --color-lavender: #c9a7ff;
-  --color-aura: #8ad7ff;
-  --color-muted: #b8a9d9;
+  --color-comic-red: #ff3366;
+  --color-comic-blue: #33ccff;
+  --color-comic-yellow: #ffcc00;
+  --color-comic-green: #33ff66;
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-starlight: #000000;
 
-  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Comic Sans MS", "Marker Felt", "Bangers", cursive, sans-serif;
+  --font-sans: "Comic Sans MS", "Chalkboard SE", "Comic Neue", sans-serif;
 
-  --radius-card: 1.5rem;
-  --radius-pill: 999px;
+  --radius-card: 0px;
+  --radius-pill: 0px;
 
-  --ease-romance: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-romance: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ----------------------------------------------------------------------------
@@ -39,15 +31,12 @@ body {
 
 body {
   min-height: 100dvh;
-  color: var(--color-starlight);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  /* Romantic night-sky base so there is never a white flash before BackgroundFX mounts. */
-  background-color: #120a24;
-  background-image:
-    radial-gradient(120% 80% at 50% -10%, #3a1d5e 0%, rgba(58, 29, 94, 0) 55%),
-    radial-gradient(90% 60% at 90% 10%, rgba(255, 93, 143, 0.18) 0%, rgba(255, 93, 143, 0) 60%),
-    radial-gradient(90% 70% at 0% 100%, rgba(138, 215, 255, 0.12) 0%, rgba(138, 215, 255, 0) 55%),
-    linear-gradient(180deg, #160d28 0%, #0e0820 100%);
+  background-color: var(--color-paper);
+  background-image: url('/bg_comic.png');
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -56,91 +45,121 @@ body {
   text-wrap: pretty;
 }
 
-/* Headlines use the romantic display serif. */
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   text-wrap: balance;
+  text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff, 4px 4px 0px #000;
+  color: var(--color-ink);
 }
 
 ::selection {
-  background: rgba(255, 93, 143, 0.35);
-  color: #fff;
+  background: var(--color-comic-yellow);
+  color: var(--color-ink);
 }
 
 button {
-  font-family: inherit;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-ink);
 }
 
 /* ----------------------------------------------------------------------------
-   Reusable surfaces & effects
+   Comic Book Elements
 ---------------------------------------------------------------------------- */
-.glass {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.035) 45%,
-    rgba(74, 39, 114, 0.18) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow:
-    0 12px 40px -12px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
+/* Replaces old glass panels */
+.glass, .glass-strong, .glass-card {
+  background: #ffffff;
+  border: 4px solid #000000;
+  box-shadow: 8px 8px 0px #000000;
+  border-radius: 0;
+  padding: 1.5rem;
+  position: relative;
+  color: #000000;
 }
 
-.glass-strong {
-  background: linear-gradient(
-    160deg,
-    rgba(40, 22, 70, 0.86) 0%,
-    rgba(22, 13, 40, 0.92) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  box-shadow:
-    0 20px 60px -16px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+.comic-panel {
+  background: var(--color-paper);
+  border: 4px solid var(--color-ink);
+  box-shadow: 8px 8px 0px var(--color-ink);
+  color: var(--color-ink);
 }
 
-/* Rose→gold gradient text for romantic headlines. */
-.romance-text {
-  background: linear-gradient(100deg, #ffd9e6 0%, #ff5d8f 38%, #ffd27d 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.comic-button {
+  background: var(--color-comic-yellow);
+  border: 4px solid var(--color-ink);
+  box-shadow: 6px 6px 0px var(--color-ink);
+  transition: all 0.1s ease;
+  color: var(--color-ink);
+  font-weight: 900;
 }
 
-.gold-text {
-  background: linear-gradient(100deg, #ffe9b0 0%, #f5b54a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.comic-button:hover, .comic-button:focus-visible {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0px var(--color-ink);
+  outline: none;
 }
 
-.text-glow {
-  text-shadow: 0 0 24px rgba(255, 93, 143, 0.55), 0 0 6px rgba(255, 210, 125, 0.4);
+.comic-button:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0px 0px 0px var(--color-ink);
 }
 
-.aura-glow {
-  box-shadow: 0 0 0 1px rgba(255, 93, 143, 0.4), 0 10px 50px -8px rgba(255, 93, 143, 0.5);
+/* Speech bubbles */
+.speech-bubble {
+  position: relative;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 50%;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  box-shadow: 6px 6px 0px #000;
+  color: #000;
 }
 
-.gold-glow {
-  box-shadow: 0 0 0 1px rgba(245, 181, 74, 0.45), 0 12px 50px -10px rgba(245, 181, 74, 0.45);
+.speech-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  border-width: 20px 20px 0;
+  border-style: solid;
+  border-color: #000 transparent transparent;
+  display: block;
+  width: 0;
 }
 
-/* Rose drop-shadow as a class (avoids SSR inline-style hydration mismatches). */
-.drop-glow-rose {
-  filter: drop-shadow(0 0 18px rgba(255, 93, 143, 0.7));
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  left: 54%;
+  border-width: 15px 15px 0;
+  border-style: solid;
+  border-color: #fff transparent transparent;
+  display: block;
+  width: 0;
 }
 
-/* Primary CTA gradient — used by Button. */
+
+/* Replaces romance text */
+.romance-text, .gold-text {
+  color: var(--color-comic-red);
+  text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff, 4px 4px 0px #000;
+}
+
+/* Removes old glowing effects, replaced with hard comic shadows */
+.text-glow, .aura-glow, .gold-glow, .drop-glow-rose {
+  box-shadow: 8px 8px 0px #000000;
+}
+
 .cta-gradient {
-  background-image: linear-gradient(100deg, #ff5d8f 0%, #ff7a98 45%, #ffac6b 100%);
+  background: var(--color-comic-yellow);
 }
 
 .no-scrollbar {
@@ -164,76 +183,55 @@ button {
   cursor: pointer;
 }
 
-/* Shimmering sweep used over locked premium sections. */
-.lock-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-.lock-shimmer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255, 210, 125, 0.22) 48%,
-    rgba(255, 255, 255, 0.32) 52%,
-    transparent 70%
-  );
-  transform: translateX(-120%);
-  animation: shimmer 2.6s var(--ease-romance) infinite;
+/* Comic action bursts */
+.anim-glow { animation: comic-pop 0.5s ease-out forwards; }
+.anim-float, .anim-float-slow, .anim-twinkle { animation: none; }
+
+@keyframes comic-pop {
+  0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 /* ----------------------------------------------------------------------------
-   Keyframes
+   Responsive + accessibility polish
 ---------------------------------------------------------------------------- */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+
+/* Cap hero comic panels so the interactive content stays near the fold on every
+   screen (these images are large and were pushing options below the fold). */
+.comic-panel img {
+  width: 100%;
+  max-height: 30vh;
+  object-fit: cover;
+  object-position: center;
 }
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-16px) rotate(2deg); }
+@media (min-width: 768px) {
+  .comic-panel img {
+    max-height: 24vh;
+  }
+  .speech-bubble {
+    font-size: 1rem;
+  }
 }
-@keyframes twinkle {
-  0%, 100% { opacity: 0.25; transform: scale(0.7); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-@keyframes shimmer {
-  0% { transform: translateX(-120%); }
-  60%, 100% { transform: translateX(120%); }
-}
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.06); }
-}
-@keyframes aurora-drift {
-  0% { transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1.1); }
-  50% { transform: translate3d(4%, 3%, 0) rotate(8deg) scale(1.25); }
-  100% { transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1.1); }
-}
-@keyframes heart-rise {
-  0% { transform: translateY(0) scale(0.6); opacity: 0; }
-  15% { opacity: 0.9; }
-  100% { transform: translateY(-130px) scale(1); opacity: 0; }
-}
-@keyframes blink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  96% { transform: scaleY(0.1); }
-}
-@keyframes gradient-pan {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+/* Short / landscape screens: keep heroes from eating the viewport. */
+@media (max-height: 720px) {
+  .comic-panel img {
+    max-height: 24vh;
+  }
 }
 
-.anim-float { animation: float 4s var(--ease-romance) infinite; }
-.anim-float-slow { animation: float-slow 7s ease-in-out infinite; }
-.anim-twinkle { animation: twinkle 2.4s ease-in-out infinite; }
-.anim-glow { animation: glow-pulse 3s ease-in-out infinite; }
+/* Never allow a horizontal scrollbar from a slightly-too-wide element. */
+body {
+  overflow-x: hidden;
+}
 
-/* ----------------------------------------------------------------------------
-   Accessibility — honor reduced motion everywhere.
----------------------------------------------------------------------------- */
+/* Visible keyboard focus for accessibility. */
+:where(a, button, input, [role='button'], [tabindex]):focus-visible {
+  outline: 3px solid #33ccff;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

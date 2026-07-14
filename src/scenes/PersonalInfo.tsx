@@ -32,10 +32,10 @@ function GenderChips({ value, onChange }: { value: Gender; onChange: (g: Gender)
             onChange(g.id);
           }}
           className={cn(
-            'tap rounded-pill border px-3 py-1.5 text-xs font-semibold transition-colors',
+            'tap border-4 px-3 py-1.5 text-xs font-black uppercase transition-all',
             value === g.id
-              ? 'border-rose/70 bg-rose/20 text-starlight'
-              : 'border-white/15 bg-white/5 text-muted',
+              ? 'border-black bg-[var(--color-comic-yellow)] text-black shadow-[4px_4px_0px_#000] translate-x-[2px] translate-y-[2px]'
+              : 'border-black bg-white text-black hover:shadow-[4px_4px_0px_#000]',
           )}
         >
           {g.label}
@@ -59,34 +59,34 @@ export function PersonalInfo() {
 
   return (
     <SceneShell>
-      <motion.h1
-        variants={riseItem}
-        initial="initial"
-        animate="animate"
-        className="text-[1.6rem] font-extrabold leading-tight"
-      >
-        Now… the <span className="romance-text">two of you</span> 💞
-      </motion.h1>
-      <p className="mt-1.5 text-sm text-muted">A few details so I can read your one-of-a-kind connection.</p>
+      <motion.div variants={riseItem} initial="initial" animate="animate" className="flex flex-col items-center mb-6">
+        <div className="comic-panel mb-4 overflow-hidden rounded-xl border-8 w-full max-w-[200px]">
+          <img src="/comic_clipboard.png" alt="Comic clipboard" className="w-full h-auto object-cover" />
+        </div>
+        <div className="speech-bubble text-black font-bold text-[18px] uppercase max-w-sm">
+          Now… the two of you 💞
+          <p className="mt-2 text-xs font-semibold">A few details so I can read your one-of-a-kind connection.</p>
+        </div>
+      </motion.div>
 
       <motion.div
         variants={staggerContainer}
         initial="initial"
         animate="animate"
-        className="mt-6 flex flex-col gap-3"
+        className="mt-6 flex flex-col gap-4 pb-24"
       >
-        <motion.div variants={riseItem} className="glass rounded-3xl p-4">
-          <div className="mb-2 text-xs font-bold uppercase tracking-wider text-blush">You</div>
+        <motion.div variants={riseItem} className="glass rounded-xl p-4">
+          <div className="mb-2 text-sm font-black uppercase tracking-wider text-black">You</div>
           <Field label="Your Name" value={you.name} onChange={(v) => setYou({ name: v })} placeholder="Your first name" />
           <GenderChips value={you.gender} onChange={(g) => setYou({ gender: g })} />
         </motion.div>
 
         <div className="flex items-center justify-center">
-          <span className="anim-glow text-3xl">❤️</span>
+          <span className="anim-glow text-4xl" style={{ filter: 'drop-shadow(4px 4px 0px #000)' }}>❤️</span>
         </div>
 
-        <motion.div variants={riseItem} className="glass rounded-3xl p-4">
-          <div className="mb-2 text-xs font-bold uppercase tracking-wider text-blush">{partnerLabel}</div>
+        <motion.div variants={riseItem} className="glass rounded-xl p-4">
+          <div className="mb-2 text-sm font-black uppercase tracking-wider text-black">{partnerLabel}</div>
           <Field
             label={partnerNameLabel}
             value={partner.name}
@@ -100,7 +100,7 @@ export function PersonalInfo() {
       <StickyCta caption={ready ? '🔒 Private — never shared' : 'Enter both names to continue'}>
         <Button
           disabled={!ready}
-          className={!ready ? 'opacity-50' : ''}
+          className={!ready ? 'opacity-50' : 'comic-button'}
           onClick={() => {
             if (!ready) return;
             haptic('tap');

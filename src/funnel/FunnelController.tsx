@@ -7,6 +7,7 @@ import { type StepId, questionForStep, progressFor, showsProgressBar } from '@/f
 import { sceneVariants } from '@/design/motion';
 import { BackgroundFX } from '@/art/BackgroundFX';
 import { TopProgressBar } from '@/components/ui/TopProgressBar';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 import { track } from '@/analytics/track';
 
 import { RelationshipSelect } from '@/scenes/RelationshipSelect';
@@ -103,8 +104,18 @@ export function FunnelController() {
   return (
     <>
       <BackgroundFX intensity={intensityFor(step)} />
+      {/* Readability scrim: tames the busy comic background so foreground text and
+          panels stay legible. Darker at the very top/bottom for the fixed bars. */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(8,6,16,0.66) 0%, rgba(8,6,16,0.4) 20%, rgba(8,6,16,0.4) 74%, rgba(8,6,16,0.7) 100%)',
+        }}
+      />
       {showBar ? <TopProgressBar progress={progress} canBack={canBack} onBack={back} /> : null}
-      <main className="flex min-h-[100dvh] flex-col">
+      <main className="relative z-10 flex min-h-[100dvh] flex-col">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -118,6 +129,7 @@ export function FunnelController() {
           </motion.div>
         </AnimatePresence>
       </main>
+      <ScrollHint />
     </>
   );
 }

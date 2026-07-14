@@ -17,7 +17,7 @@ describe('scene rendering (smoke)', () => {
 
   it('renders the relationship select with all cards', () => {
     const html = renderToStaticMarkup(<RelationshipSelect />);
-    expect(html).toContain('compatibility');
+    expect(html.toLowerCase()).toContain('compatibility');
     expect(html).toContain('Married Partner');
     expect(html).toContain('Just Curious');
   });
