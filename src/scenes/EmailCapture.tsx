@@ -37,16 +37,18 @@ export function EmailCapture() {
 
   return (
     <SceneShell center>
-      <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col items-center text-center pb-24">
-        <motion.div variants={riseItem} className="flex flex-col items-center mb-6">
-          <div className="comic-panel mb-4 overflow-hidden rounded-xl border-8 w-full max-w-[200px]">
-            <img src="/comic_envelope.png" alt="Comic envelope" className="w-full h-auto object-cover" />
-          </div>
-          <div className="speech-bubble text-black font-bold text-[18px] uppercase max-w-sm">
-            Save your <span className="romance-text">love report</span>
-            <p className="mt-2 text-xs font-semibold">Where should I send your full report + weekly compatibility insights? 💌</p>
-          </div>
+      <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col items-center text-center">
+        <motion.div variants={riseItem} className="flex items-end gap-2">
+          <Mascot name="cupid" mood="cheer" size={66} />
+          <SpeechBubble tail="left" className="mb-1">Where should I send your report? 💌</SpeechBubble>
         </motion.div>
+
+        <motion.h1 variants={riseItem} className="mt-4 text-[1.6rem] font-extrabold leading-tight">
+          Save your <span className="romance-text">love report</span>
+        </motion.h1>
+        <motion.p variants={riseItem} className="mt-1.5 text-sm text-muted">
+          Get your full report + a weekly compatibility insight for you two.
+        </motion.p>
 
         <motion.div variants={riseItem} className="mt-6 w-full text-left">
           <Field

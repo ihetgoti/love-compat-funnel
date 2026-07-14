@@ -49,20 +49,56 @@ export function Analysis() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const youSign = getZodiac(you.dob);
+  const pSign = getZodiac(partner.dob);
   const progress = ((i + 1) / total) * 100;
 
   return (
     <SceneShell center flush>
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-3xl font-black uppercase mb-4 text-[var(--color-comic-blue)]">
-          Crunching the numbers!
-        </h1>
-        
-        <div className="comic-panel mb-8 overflow-hidden rounded-xl border-8 w-full max-w-[240px]">
-          <img src="/analysis_comic.png" alt="Comic analysis" className="w-full h-auto object-cover" />
+        <div className="relative flex items-center gap-3">
+          <Avatar name={you.name} element={youSign.element} glyph={youSign.glyph} size={84} />
+          <motion.span
+            animate={{ scale: [1, 1.28, 1] }}
+            transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
+            className="text-4xl"
+            style={{ filter: 'drop-shadow(0 0 14px rgba(255,93,143,0.8))' }}
+          >
+            💞
+          </motion.span>
+          <Avatar name={partner.name} element={pSign.element} glyph={pSign.glyph} size={84} />
         </div>
 
-        <div className="flex h-20 items-start justify-center">
+        <motion.div
+          className="relative mt-9 h-28 w-28"
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 9, ease: 'linear' }}
+        >
+          {[0, 1, 2, 3, 4, 5].map((n) => {
+            const ang = (n / 6) * Math.PI * 2;
+            return (
+              <span
+                key={n}
+                className="anim-twinkle absolute text-lg"
+                style={{
+                  left: `${50 + Math.cos(ang) * 46}%`,
+                  top: `${50 + Math.sin(ang) * 46}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+              >
+                {n % 2 ? '✨' : '❤️'}
+              </span>
+            );
+          })}
+          <span
+            className="anim-glow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl"
+            style={{ filter: 'drop-shadow(0 0 16px rgba(255,210,125,0.8))' }}
+          >
+            🔮
+          </span>
+        </motion.div>
+
+        <div className="mt-9 flex h-20 items-start justify-center">
           <AnimatePresence mode="wait">
             <motion.div
               key={i}
@@ -70,24 +106,25 @@ export function Analysis() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center bg-white border-4 border-black p-3 rounded-lg shadow-[4px_4px_0px_#000]"
+              className="flex flex-col items-center"
             >
-              <span className="text-xl font-bold uppercase text-black">
+              <span className="text-3xl">{ANALYSIS_BEATS[i].icon}</span>
+              <span className="mt-2 px-6 text-lg font-semibold text-starlight">
                 {ANALYSIS_BEATS[i].text}
               </span>
             </motion.div>
           </AnimatePresence>
         </div>
 
-        <div className="mt-8 h-6 w-64 border-4 border-black bg-white rounded-md overflow-hidden relative shadow-[4px_4px_0px_#000]">
+        <div className="mt-4 h-2 w-56 overflow-hidden rounded-full bg-white/10">
           <motion.div
-            className="h-full bg-[var(--color-comic-green)]"
+            className="cta-gradient h-full rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: `${progress}%` }}
             transition={{ ease: 'linear', duration: BEAT_MS / 1000 }}
           />
         </div>
-        <div className="mt-4 text-sm font-bold uppercase tracking-wider text-black">
+        <div className="mt-2 text-xs text-muted">
           Analyzing {firstName(you.name, 'you')} × {firstName(partner.name, 'them')}…
         </div>
       </div>
