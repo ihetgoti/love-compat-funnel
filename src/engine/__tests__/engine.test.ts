@@ -105,6 +105,29 @@ describe('compatibility result', () => {
     expect(new Set(r.commonThings).size).toBe(7);
   });
 
+  it('is gender-blind: same-gender couples score identically to any pairing', () => {
+    const base = input();
+    const ff = computeCompatibility(
+      { ...base, you: { ...base.you, gender: 'female' }, partner: { ...base.partner, gender: 'female' } },
+      NOW,
+    );
+    const mm = computeCompatibility(
+      { ...base, you: { ...base.you, gender: 'male' }, partner: { ...base.partner, gender: 'male' } },
+      NOW,
+    );
+    const mf = computeCompatibility(
+      { ...base, you: { ...base.you, gender: 'female' }, partner: { ...base.partner, gender: 'male' } },
+      NOW,
+    );
+    // Identical seed, score, subscores, and generated text — gender never enters the math.
+    expect(ff.seed).toBe(mf.seed);
+    expect(ff.score).toBe(mf.score);
+    expect(mm.score).toBe(mf.score);
+    expect(ff.subscores).toEqual(mf.subscores);
+    expect(ff.commonThings).toEqual(mf.commonThings);
+    expect(ff.overview).toBe(mf.overview);
+  });
+
   it('computes context flags', () => {
     const sameBday = computeCompatibility(
       input({

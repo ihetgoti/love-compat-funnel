@@ -17,8 +17,10 @@ export const STEP_ORDER: StepId[] = [
   'results',
   'offer',
   'checkout',
-  'upsell',
+  // Paying the micro offer lands you straight in your report (instant reward).
+  // The upsell only appears AFTER every chapter has been read (see FinalReport).
   'report',
+  'upsell',
   'email',
   'share',
 ];

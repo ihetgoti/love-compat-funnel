@@ -11,6 +11,7 @@ import { useQuizStore } from '@/store/useQuizStore';
 import { staggerContainer, riseItem } from '@/design/motion';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 
 export function RelationshipSelect() {
   const setRelationship = useQuizStore((s) => s.setRelationship);
@@ -31,6 +32,7 @@ export function RelationshipSelect() {
 
   return (
     <SceneShell>
+      <ScrollHint />
       <motion.div variants={riseItem} initial="initial" animate="animate" className="mb-3 flex items-end gap-2">
         <Mascot name="cupid" mood="wink" size={62} />
         <SpeechBubble tail="left" className="mb-1">

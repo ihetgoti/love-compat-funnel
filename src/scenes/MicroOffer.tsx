@@ -5,11 +5,13 @@ import { motion } from 'framer-motion';
 import { SceneShell } from '@/components/ui/SceneShell';
 import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
+import { CurrencyPicker } from '@/components/ui/CurrencyPicker';
 import { useQuizStore } from '@/store/useQuizStore';
 import { MICRO_OFFER } from '@/content/offers';
+import { getPricing, formatMoney } from '@/content/pricing';
 import { TESTIMONIALS, TRUST_SIGNALS, SOCIAL_PROOF_BASE, MONEY_BACK } from '@/content/copy';
 import { staggerContainer, riseItem } from '@/design/motion';
-import { money, firstName } from '@/lib/format';
+import { firstName } from '@/lib/format';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
 
@@ -28,19 +30,22 @@ export function MicroOffer() {
   const results = useQuizStore((s) => s.results);
   const you = useQuizStore((s) => s.you);
   const partner = useQuizStore((s) => s.partner);
+  const currency = useQuizStore((s) => s.currency);
   const next = useQuizStore((s) => s.next);
   const timer = useCountdown(600);
+  const p = getPricing(currency);
 
   useEffect(() => {
-    track('ViewOffer', { value: MICRO_OFFER.price });
+    track('ViewOffer', { value: p.micro, currency: p.currency });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const discount = Math.round((1 - MICRO_OFFER.price / MICRO_OFFER.compareAt) * 100);
+  const discount = Math.round((1 - p.micro / p.microCompareAt) * 100);
   const proof = SOCIAL_PROOF_BASE + (results ? (results.seed % 400) + 120 : 200);
 
   const checkout = () => {
     haptic('success');
-    track('InitiateCheckout', { value: MICRO_OFFER.price });
+    track('InitiateCheckout', { value: p.micro, currency: p.currency });
     next();
   };
 
@@ -65,13 +70,16 @@ export function MicroOffer() {
 
         {/* price block */}
         <motion.div variants={riseItem} className="mt-5 flex flex-col items-center rounded-3xl glass p-5">
-          <div className="flex items-center gap-1.5 rounded-full bg-rose/20 px-3 py-1 text-xs font-bold text-blush">
-            ⏳ Reserved price ends in {timer}
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-1.5 rounded-full bg-rose/20 px-3 py-1 text-xs font-bold text-blush">
+              ⏳ Ends in {timer}
+            </div>
+            <CurrencyPicker />
           </div>
           <div className="mt-3 flex items-end gap-3">
-            <span className="font-display text-5xl font-extrabold gold-text">{money(MICRO_OFFER.price)}</span>
+            <span className="font-display text-5xl font-extrabold gold-text">{formatMoney(p.micro, currency)}</span>
             <span className="mb-1.5 text-lg font-semibold text-muted line-through">
-              {money(MICRO_OFFER.compareAt)}
+              {formatMoney(p.microCompareAt, currency)}
             </span>
           </div>
           <div className="mt-1 rounded-full bg-gold/15 px-3 py-1 text-xs font-bold text-gold">
@@ -119,7 +127,7 @@ export function MicroOffer() {
 
       <StickyCta caption={MONEY_BACK}>
         <Button variant="gold" onClick={checkout}>
-          Unlock Full Report — {money(MICRO_OFFER.price)}
+          Unlock Full Report — {formatMoney(p.micro, currency)}
         </Button>
       </StickyCta>
     </SceneShell>

@@ -5,3 +5,5 @@ export { lifePathFromDob, isMasterNumber } from './numerology';
 export { ARCHETYPES, archetypeFor } from './archetype';
 export { SUBSCORE_META, labelFor } from './narrative';
 export { hashSeed, mulberry32, unitFrom } from './seededRandom';
+export { generateReport } from './report';
+export type { FullReport, ReportSection, ReportInput } from './report';

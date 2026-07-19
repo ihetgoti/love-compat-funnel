@@ -19,6 +19,7 @@ describe('scene rendering (smoke)', () => {
     const html = renderToStaticMarkup(<RelationshipSelect />);
     expect(html).toContain('compatibility');
     expect(html).toContain('Married Partner');
+    expect(html).toContain('Situationship');
     expect(html).toContain('Just Curious');
   });
 

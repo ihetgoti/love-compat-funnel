@@ -52,15 +52,25 @@ export function ChoiceCard({
         />
       )}
       {emoji ? (
-        <span className={cn('relative leading-none', layout === 'tile' ? 'text-[2.6rem]' : 'text-3xl')}>
-          {emoji}
+        <span className={cn(
+          'relative flex items-center justify-center rounded-full',
+          layout === 'tile' ? 'w-16 h-16 text-3xl mb-1' : 'w-12 h-12 text-2xl',
+          selected 
+            ? 'bg-gradient-to-br from-white/20 to-white/5 shadow-[0_0_20px_rgba(255,255,255,0.2)] border border-white/30' 
+            : 'bg-white/5 border border-white/10'
+        )}>
+          <span className="relative z-10 anim-float" style={{ animationDuration: '6s' }}>{emoji}</span>
+          {selected && (
+            <span className="absolute inset-0 rounded-full bg-rose/20 blur-md anim-glow" />
+          )}
         </span>
       ) : null}
       <span className={cn('relative flex-1', layout === 'tile' && 'text-center')}>
         <span
           className={cn(
-            'block font-bold text-starlight',
+            'block font-bold text-starlight transition-all duration-300',
             layout === 'tile' ? 'text-[15px] leading-tight' : 'text-[17px]',
+            selected ? 'text-shadow-sm shadow-white/50' : ''
           )}
         >
           {label}

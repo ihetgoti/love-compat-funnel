@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useQuizStore } from '../useQuizStore';
 import { STEP_ORDER } from '@/funnel/steps';
+import { SMALL_REPORT_PRICE, UPSELL_PRICE } from '@/content/offers';
 
 const get = () => useQuizStore.getState();
 
@@ -41,7 +42,28 @@ describe('funnel store integration', () => {
     get().purchaseUpsell();
     expect(get().order.microPurchased).toBe(true);
     expect(get().order.upsellPurchased).toBe(true);
-    expect(get().order.total).toBeCloseTo(29.99, 2);
+    expect(get().order.total).toBeCloseTo(SMALL_REPORT_PRICE + UPSELL_PRICE, 2);
+    // Upsell must be exactly 10× the small report.
+    expect(UPSELL_PRICE).toBeCloseTo(SMALL_REPORT_PRICE * 10, 2);
+  });
+
+  it('charges PPP prices for the selected market (India)', () => {
+    get().setCurrency('IN', true);
+    get().purchaseMicro();
+    expect(get().order.total).toBeCloseTo(99, 2);
+    get().purchaseUpsell();
+    expect(get().order.total).toBeCloseTo(99 + 990, 2);
+    expect(get().order.currency).toBe('IN');
+    expect(get().currencyChosen).toBe(true);
+  });
+
+  it('tracks chapter reads (deduped) and upsell decline', () => {
+    get().openChapter('soulmate');
+    get().openChapter('soulmate');
+    get().openChapter('chemistry');
+    expect(get().openedChapters).toEqual(['soulmate', 'chemistry']);
+    get().declineUpsell();
+    expect(get().upsellDeclined).toBe(true);
   });
 
   it('back() never lands on the cinematic analysis', () => {

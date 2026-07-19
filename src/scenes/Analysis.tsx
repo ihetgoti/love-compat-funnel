@@ -10,6 +10,7 @@ import { getZodiac } from '@/engine/zodiac';
 import { firstName } from '@/lib/format';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
+import { CosmicScanner } from '@/art/CosmicScanner';
 
 const BEAT_MS = 1700;
 
@@ -57,7 +58,7 @@ export function Analysis() {
     <SceneShell center flush>
       <div className="flex flex-col items-center text-center">
         <div className="relative flex items-center gap-3">
-          <Avatar name={you.name} element={youSign.element} glyph={youSign.glyph} size={84} />
+          <Avatar name={you.name} gender={you.gender} dob={you.dob} element={youSign.element} glyph={youSign.glyph} size={84} />
           <motion.span
             animate={{ scale: [1, 1.28, 1] }}
             transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
@@ -66,37 +67,11 @@ export function Analysis() {
           >
             💞
           </motion.span>
-          <Avatar name={partner.name} element={pSign.element} glyph={pSign.glyph} size={84} />
+          <Avatar name={partner.name} gender={partner.gender} dob={partner.dob} element={pSign.element} glyph={pSign.glyph} size={84} />
         </div>
 
-        <motion.div
-          className="relative mt-9 h-28 w-28"
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 9, ease: 'linear' }}
-        >
-          {[0, 1, 2, 3, 4, 5].map((n) => {
-            const ang = (n / 6) * Math.PI * 2;
-            return (
-              <span
-                key={n}
-                className="anim-twinkle absolute text-lg"
-                style={{
-                  left: `${50 + Math.cos(ang) * 46}%`,
-                  top: `${50 + Math.sin(ang) * 46}%`,
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
-                {n % 2 ? '✨' : '❤️'}
-              </span>
-            );
-          })}
-          <span
-            className="anim-glow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl"
-            style={{ filter: 'drop-shadow(0 0 16px rgba(255,210,125,0.8))' }}
-          >
-            🔮
-          </span>
-        </motion.div>
+        <CosmicScanner />
+
 
         <div className="mt-9 flex h-20 items-start justify-center">
           <AnimatePresence mode="wait">

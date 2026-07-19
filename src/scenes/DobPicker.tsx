@@ -12,6 +12,7 @@ import { useQuizStore } from '@/store/useQuizStore';
 import { getRelationshipType } from '@/content/relationshipTypes';
 import { getZodiac } from '@/engine/zodiac';
 import { buildEventContext, pickEvent, type MascotEvent } from '@/events/eventEngine';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 import { prettyDate, firstName } from '@/lib/format';
 import { haptic } from '@/design/haptics';
 import { track } from '@/analytics/track';
@@ -170,6 +171,7 @@ export function DobPicker() {
 
   return (
     <SceneShell center>
+      <ScrollHint />
       <div className="relative">
         <AnimatePresence mode="wait">
           <motion.div
@@ -180,7 +182,14 @@ export function DobPicker() {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="mb-4 flex flex-col items-center text-center">
-              <Avatar name={name} element={sign.element} glyph={sign.glyph} size={76} />
+              <Avatar 
+                name={name} 
+                gender={isYou ? you.gender : partner.gender} 
+                dob={isYou ? toISO(youDate) : toISO(partnerDate)} 
+                element={sign.element} 
+                glyph={sign.glyph} 
+                size={76} 
+              />
               <h1 className="mt-3 text-[1.5rem] font-extrabold leading-tight">
                 {isYou ? (
                   <>

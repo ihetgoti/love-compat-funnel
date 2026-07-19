@@ -59,12 +59,12 @@ export function AuraRing({ score, size = 210, stroke = 14, label, sub, duration 
           style={{ filter: 'drop-shadow(0 0 10px rgba(255,93,143,0.55))' }}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="romance-text text-glow font-display text-[3.4rem] font-extrabold leading-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+        <span className="romance-text text-glow font-display font-extrabold leading-none" style={{ fontSize: size * 0.28 }}>
           {Math.round(val)}%
         </span>
-        {label ? <span className="mt-1.5 text-sm font-bold text-blush">{label}</span> : null}
-        {sub ? <span className="mt-0.5 text-xs text-muted">{sub}</span> : null}
+        {label ? <span className="mt-1 font-bold text-blush" style={{ fontSize: size * 0.08 }}>{label}</span> : null}
+        {sub ? <span className="mt-0.5 text-muted leading-tight" style={{ fontSize: Math.max(10, size * 0.055) }}>{sub}</span> : null}
       </div>
     </div>
   );

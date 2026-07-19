@@ -9,6 +9,7 @@ import { Field } from '@/components/ui/Field';
 import { Mascot } from '@/art/Mascot';
 import { SpeechBubble } from '@/art/SpeechBubble';
 import { useQuizStore } from '@/store/useQuizStore';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 import { riseItem, staggerContainer } from '@/design/motion';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
@@ -37,6 +38,7 @@ export function EmailCapture() {
 
   return (
     <SceneShell center>
+      <ScrollHint />
       <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col items-center text-center">
         <motion.div variants={riseItem} className="flex items-end gap-2">
           <Mascot name="cupid" mood="cheer" size={66} />

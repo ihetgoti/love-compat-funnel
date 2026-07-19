@@ -3,8 +3,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { CompatibilityResult, Person } from '@/engine/types';
+import type { FullReport } from '@/engine/report';
 import { computeCompatibility } from '@/engine';
 import type { RelationshipTypeId } from '@/content/relationshipTypes';
+import { getPricing, type CountryCode } from '@/content/pricing';
 import { type StepId, nextStep } from '@/funnel/steps';
 
 const EMPTY_PERSON: Person = { name: '', gender: 'unspecified', dob: null };
@@ -22,7 +24,19 @@ interface QuizState {
   partner: Person;
   results: CompatibilityResult | null;
 
-  order: { microPurchased: boolean; upsellPurchased: boolean; total: number };
+  /** Post-paywall report — generated on the BACKEND (/api/report), cached here. */
+  report: FullReport | null;
+  reportLoading: boolean;
+  reportError: boolean;
+  /** Chapter ids the reader has tapped open (drives progress + upsell gate). */
+  openedChapters: string[];
+
+  /** PPP market for pricing display + order totals. */
+  currency: CountryCode;
+  currencyChosen: boolean; // true once the user manually picked (stops auto-detect)
+
+  order: { microPurchased: boolean; upsellPurchased: boolean; total: number; currency: CountryCode };
+  upsellDeclined: boolean;
   email: string | null;
   shareCount: number;
 
@@ -37,8 +51,12 @@ interface QuizState {
   setYou: (patch: Partial<Person>) => void;
   setPartner: (patch: Partial<Person>) => void;
   compute: () => void;
+  fetchReport: () => Promise<void>;
+  openChapter: (id: string) => void;
+  setCurrency: (code: CountryCode, manual?: boolean) => void;
   purchaseMicro: () => void;
   purchaseUpsell: () => void;
+  declineUpsell: () => void;
   setEmail: (email: string) => void;
   incShare: () => void;
   reset: () => void;
@@ -54,7 +72,14 @@ const initialData = {
   you: { ...EMPTY_PERSON },
   partner: { ...EMPTY_PERSON },
   results: null as CompatibilityResult | null,
-  order: { microPurchased: false, upsellPurchased: false, total: 0 },
+  report: null as FullReport | null,
+  reportLoading: false,
+  reportError: false,
+  openedChapters: [] as string[],
+  currency: 'US' as CountryCode,
+  currencyChosen: false,
+  order: { microPurchased: false, upsellPurchased: false, total: 0, currency: 'US' as CountryCode },
+  upsellDeclined: false,
   email: null as string | null,
   shareCount: 0,
 };
@@ -107,32 +132,79 @@ export const useQuizStore = create<QuizState>()(
         set({ results });
       },
 
-      purchaseMicro: () =>
+      /** Fetch the report from the backend generator. Cached; safe to re-call. */
+      fetchReport: async () => {
+        const { you, partner, relationshipType, answers, report, reportLoading } = get();
+        if (report || reportLoading) return;
+        set({ reportLoading: true, reportError: false });
+        try {
+          const res = await fetch('/api/report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ you, partner, relationshipType, answers }),
+          });
+          const data = (await res.json()) as { ok: boolean; report?: FullReport };
+          if (!res.ok || !data.ok || !data.report) throw new Error('bad-response');
+          set({ report: data.report, reportLoading: false });
+        } catch {
+          set({ reportLoading: false, reportError: true });
+        }
+      },
+
+      openChapter: (id) =>
+        set((s) =>
+          s.openedChapters.includes(id) ? s : { openedChapters: [...s.openedChapters, id] },
+        ),
+
+      setCurrency: (code, manual = false) =>
         set((s) => ({
-          order: {
-            ...s.order,
-            microPurchased: true,
-            total: Number((s.order.total + 2.99).toFixed(2)),
-          },
+          currency: code,
+          currencyChosen: manual || s.currencyChosen,
         })),
 
+      purchaseMicro: () =>
+        set((s) => {
+          const p = getPricing(s.currency);
+          return {
+            order: {
+              ...s.order,
+              microPurchased: true,
+              currency: s.currency,
+              total: Number((s.order.total + p.micro).toFixed(2)),
+            },
+          };
+        }),
+
       purchaseUpsell: () =>
-        set((s) => ({
-          order: {
-            ...s.order,
-            upsellPurchased: true,
-            total: Number((s.order.total + 27).toFixed(2)),
-          },
-        })),
+        set((s) => {
+          const p = getPricing(s.currency);
+          return {
+            order: {
+              ...s.order,
+              upsellPurchased: true,
+              currency: s.currency,
+              total: Number((s.order.total + p.upsell).toFixed(2)),
+            },
+          };
+        }),
+
+      declineUpsell: () => set({ upsellDeclined: true }),
 
       setEmail: (email) => set({ email }),
       incShare: () => set((s) => ({ shareCount: s.shareCount + 1 })),
 
-      reset: () => set({ ...initialData, you: { ...EMPTY_PERSON }, partner: { ...EMPTY_PERSON } }),
+      reset: () =>
+        set({
+          ...initialData,
+          you: { ...EMPTY_PERSON },
+          partner: { ...EMPTY_PERSON },
+          order: { ...initialData.order },
+        }),
     }),
     {
       name: 'lovecompat:v1',
-      version: 1,
+      version: 2,
+      migrate: (persisted) => persisted as QuizState, // v1→v2: new fields fall back to defaults via merge
       // Guard against SSR (no localStorage) and defer rehydration to the client
       // so the server and first client render match (see FunnelController).
       storage: createJSONStorage(() =>
@@ -151,7 +223,12 @@ export const useQuizStore = create<QuizState>()(
         you: s.you,
         partner: s.partner,
         results: s.results,
+        report: s.report,
+        openedChapters: s.openedChapters,
+        currency: s.currency,
+        currencyChosen: s.currencyChosen,
         order: s.order,
+        upsellDeclined: s.upsellDeclined,
         email: s.email,
         shareCount: s.shareCount,
       }),

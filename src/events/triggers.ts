@@ -11,6 +11,7 @@ export const TRIGGERS: Trigger[] = [
   { id: 'rel-ex', slot: 'afterRelationship', weight: 5, mascot: 'cupid', mood: 'happy', when: (c) => c.relationshipType === 'ex', message: () => 'Some stories deserve a second look. Let’s see what the universe thinks 💫' },
   { id: 'rel-friend', slot: 'afterRelationship', weight: 5, mascot: 'cupid', mood: 'wink', when: (c) => c.relationshipType === 'friend', message: () => 'Friends-to-lovers? Honestly, my favorite genre 👀' },
   { id: 'rel-curious', slot: 'afterRelationship', weight: 4, mascot: 'fortuneCat', mood: 'giggle', when: (c) => c.relationshipType === 'curious', message: () => '“Just curious”… that’s exactly how every great love starts 😼' },
+  { id: 'rel-situationship', slot: 'afterRelationship', weight: 5, mascot: 'fortuneCat', mood: 'wink', when: (c) => c.relationshipType === 'situationship', message: () => 'No label? No problem — the stars don’t need one to read you two 🫧' },
   { id: 'rel-future', slot: 'afterRelationship', weight: 5, mascot: 'matchmaker', mood: 'reveal', when: (c) => c.relationshipType === 'future', message: () => 'Manifesting your future love? Let’s read the signs together 🔮' },
   { id: 'rel-married', slot: 'afterRelationship', weight: 5, mascot: 'cupid', mood: 'cheer', when: (c) => c.relationshipType === 'married', message: () => 'Still curious after “I do”? That’s the beautiful kind of love 💍' },
   { id: 'rel-like', slot: 'afterRelationship', weight: 4, mascot: 'cupid', mood: 'happy', when: (c) => c.relationshipType === 'like', message: () => 'Someone special, hm? Let’s find out if they feel it too 💖' },
@@ -18,6 +19,8 @@ export const TRIGGERS: Trigger[] = [
 
   // -------- after both birthdays are set --------
   { id: 'dob-same-birthday', slot: 'afterDob', weight: 9, mascot: 'fortuneCat', mood: 'wow', when: (c) => !!c.flags?.sameBirthday, message: () => 'WHOA — you two share a birthday?! That’s incredibly rare 🎉' },
+  // Only fires when BOTH people explicitly chose the same gender (never inferred).
+  { id: 'dob-same-gender', slot: 'afterDob', weight: 8, mascot: 'cupid', mood: 'cheer', when: (c) => c.you.gender !== 'unspecified' && c.you.gender === c.partner.gender, message: () => 'Love is love — and yours is written in the stars 🌈✨' },
   { id: 'dob-same-sign', slot: 'afterDob', weight: 7, mascot: 'matchmaker', mood: 'reveal', when: (c) => !!c.flags?.sameSign && !c.flags?.sameBirthday, message: (c) => `Two ${c.youSign.name}s… two souls under the very same stars ✨` },
   { id: 'dob-same-element', slot: 'afterDob', weight: 6, mascot: 'matchmaker', mood: 'knowing', when: (c) => !!c.flags?.sameElement && !c.flags?.sameSign, message: (c) => `Kindred ${c.youSign.element} energies — this one could run deep 🌊🔥` },
   { id: 'dob-age-gap', slot: 'afterDob', weight: 6, mascot: 'cupid', mood: 'happy', when: (c) => (c.flags?.ageGapYears ?? 0) >= 12, message: () => 'A little age gap? Love sometimes writes its own rules ❤️' },

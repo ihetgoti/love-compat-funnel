@@ -26,22 +26,23 @@ export function HeartScale({ value, onChange, lowLabel, highLabel }: HeartScaleP
                 onChange(n);
               }}
               aria-label={`${n} out of 5`}
-              className="tap p-1.5"
+              className="tap relative p-1.5"
             >
               <motion.span
-                animate={{ scale: filled ? 1.12 : 1, opacity: filled ? 1 : 0.45 }}
+                animate={{ scale: filled ? 1.15 : 1, opacity: filled ? 1 : 0.6 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 16 }}
-                className="block text-[2.6rem] leading-none"
-                style={filled ? { filter: 'drop-shadow(0 0 10px rgba(255,93,143,0.7))' } : undefined}
+                className="block text-[2.6rem] leading-none transition-all duration-300"
+                style={filled ? { filter: 'drop-shadow(0 0 12px rgba(255,93,143,0.8))' } : { filter: 'grayscale(0.5)' }}
               >
-                {filled ? '❤️' : '🤍'}
+                ❤️
               </motion.span>
+              {filled && <span className="absolute inset-0 bg-rose/30 rounded-full blur-xl anim-glow" />}
             </motion.button>
           );
         })}
       </div>
       {lowLabel || highLabel ? (
-        <div className="mt-2 flex justify-between px-2 text-xs font-medium text-muted">
+        <div className="mt-3 flex justify-between px-2 text-xs font-bold uppercase tracking-wider text-muted">
           <span>{lowLabel}</span>
           <span>{highLabel}</span>
         </div>

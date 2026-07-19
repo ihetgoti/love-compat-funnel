@@ -8,6 +8,7 @@ import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
 import { ChoiceCard } from '@/components/ui/ChoiceCard';
 import { HeartScale } from '@/components/ui/HeartScale';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 import { MascotInterstitial } from '@/art/MascotInterstitial';
 import { useQuizStore } from '@/store/useQuizStore';
 import { staggerContainer, riseItem } from '@/design/motion';

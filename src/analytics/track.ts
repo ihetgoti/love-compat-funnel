@@ -55,12 +55,25 @@ function noop(): void {
   /* swallow pixel errors — analytics must never break the funnel */
 }
 
+/**
+ * Events that are NEVER sent to Meta/Snap pixels — internal-only.
+ *
+ * Strategy: ad platforms only ever see the funnel up to the cheap micro
+ * Purchase. The 10× upsell is invisible to them, so the reported purchase
+ * value stays low and campaign optimization targets cheap conversions —
+ * while real AOV stays private. (Lead/Share still fire; add them here too
+ * if you want to go fully dark after Purchase.)
+ */
+const PIXEL_BLOCKED: ReadonlySet<FunnelEvent> = new Set(['ViewUpsell', 'UpsellPurchase']);
+
 export function track(event: FunnelEvent, props: Props = {}): void {
   if (typeof window === 'undefined') return;
 
   if (process.env.NODE_ENV !== 'production') {
-    console.debug(`%c[track] ${event}`, 'color:#ff5d8f', props);
+    console.debug(`%c[track] ${event}`, 'color:#ff5d8f', props, PIXEL_BLOCKED.has(event) ? '(internal-only, no pixels)' : '');
   }
+
+  if (PIXEL_BLOCKED.has(event)) return; // internal-only — never reaches Meta/Snap
 
   if (window.fbq) {
     try {

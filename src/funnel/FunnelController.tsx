@@ -7,6 +7,7 @@ import { type StepId, questionForStep, progressFor, showsProgressBar } from '@/f
 import { sceneVariants } from '@/design/motion';
 import { BackgroundFX } from '@/art/BackgroundFX';
 import { TopProgressBar } from '@/components/ui/TopProgressBar';
+import { detectCountry, type CountryCode } from '@/content/pricing';
 import { track } from '@/analytics/track';
 
 import { RelationshipSelect } from '@/scenes/RelationshipSelect';
@@ -48,7 +49,7 @@ function intensityFor(step: StepId): 'calm' | 'normal' | 'intense' {
   return 'normal';
 }
 
-export function FunnelController() {
+export function FunnelController({ forcedMarket }: { forcedMarket?: CountryCode } = {}) {
   const hydrated = useQuizStore((s) => s.hydrated);
   const step = useQuizStore((s) => s.step);
   const history = useQuizStore((s) => s.history);
@@ -58,6 +59,17 @@ export function FunnelController() {
   useEffect(() => {
     void useQuizStore.persist.rehydrate();
   }, []);
+
+  // Pricing market resolution, in priority order:
+  //   1. Market-locked campaign URL (/in, /th, …) — always wins, every visit.
+  //   2. The user's manual CurrencyPicker choice.
+  //   3. Auto-detect from device timezone + locale.
+  useEffect(() => {
+    if (!hydrated) return;
+    const s = useQuizStore.getState();
+    if (forcedMarket) s.setCurrency(forcedMarket, true);
+    else if (!s.currencyChosen) s.setCurrency(detectCountry());
+  }, [hydrated, forcedMarket]);
 
   // Analytics + shallow URL sync per step.
   useEffect(() => {

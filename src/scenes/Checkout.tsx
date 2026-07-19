@@ -7,14 +7,16 @@ import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
 import { useQuizStore } from '@/store/useQuizStore';
 import { MICRO_OFFER } from '@/content/offers';
-import { money } from '@/lib/format';
+import { getPricing, formatMoney } from '@/content/pricing';
 import { track } from '@/analytics/track';
 import { haptic } from '@/design/haptics';
 
 export function Checkout() {
   const purchaseMicro = useQuizStore((s) => s.purchaseMicro);
+  const currency = useQuizStore((s) => s.currency);
   const next = useQuizStore((s) => s.next);
   const [processing, setProcessing] = useState(false);
+  const p = getPricing(currency);
 
   const pay = () => {
     if (processing) return;
@@ -22,8 +24,9 @@ export function Checkout() {
     haptic('success');
     setTimeout(() => {
       purchaseMicro();
-      track('Purchase', { value: MICRO_OFFER.price, content: 'full-report' });
-      next();
+      // The LAST event the ad pixels ever see — local value + ISO currency.
+      track('Purchase', { value: p.micro, currency: p.currency, content: 'small-report' });
+      next(); // → straight into the report (instant reward)
     }, 1500);
   };
 
@@ -40,14 +43,14 @@ export function Checkout() {
             <div className="text-xs text-muted">Instant digital access · lifetime</div>
           </div>
           <div className="text-right">
-            <div className="font-bold text-starlight">{money(MICRO_OFFER.price)}</div>
-            <div className="text-xs text-muted line-through">{money(MICRO_OFFER.compareAt)}</div>
+            <div className="font-bold text-starlight">{formatMoney(p.micro, currency)}</div>
+            <div className="text-xs text-muted line-through">{formatMoney(p.microCompareAt, currency)}</div>
           </div>
         </div>
         <div className="my-3 h-px bg-white/10" />
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted">Total due today</span>
-          <span className="font-display text-2xl font-extrabold gold-text">{money(MICRO_OFFER.price)}</span>
+          <span className="font-display text-2xl font-extrabold gold-text">{formatMoney(p.micro, currency)}</span>
         </div>
       </div>
 
@@ -94,7 +97,7 @@ export function Checkout() {
 
       <StickyCta caption="↩️ 100% money-back promise">
         <Button variant="primary" onClick={pay} disabled={processing}>
-          {processing ? 'Processing…' : `Pay ${money(MICRO_OFFER.price)} →`}
+          {processing ? 'Processing…' : `Pay ${formatMoney(p.micro, currency)} →`}
         </Button>
       </StickyCta>
 

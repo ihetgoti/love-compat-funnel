@@ -12,6 +12,7 @@ import { riseItem, staggerContainer } from '@/design/motion';
 import { haptic } from '@/design/haptics';
 import { track } from '@/analytics/track';
 import { cn } from '@/lib/cn';
+import { ScrollHint } from '@/components/ui/ScrollHint';
 
 const GENDERS: { id: Gender; label: string }[] = [
   { id: 'female', label: 'Female' },
@@ -34,8 +35,8 @@ function GenderChips({ value, onChange }: { value: Gender; onChange: (g: Gender)
           className={cn(
             'tap rounded-pill border px-3 py-1.5 text-xs font-semibold transition-colors',
             value === g.id
-              ? 'border-rose/70 bg-rose/20 text-starlight'
-              : 'border-white/15 bg-white/5 text-muted',
+              ? 'border-rose/70 bg-rose/20 text-starlight shadow-[0_0_15px_rgba(255,93,143,0.3)]'
+              : 'border-white/15 bg-white/5 text-muted hover:bg-white/10',
           )}
         >
           {g.label}
@@ -59,6 +60,7 @@ export function PersonalInfo() {
 
   return (
     <SceneShell>
+      <ScrollHint />
       <motion.h1
         variants={riseItem}
         initial="initial"
