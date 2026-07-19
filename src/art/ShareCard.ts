@@ -133,10 +133,13 @@ export function generateShareCard(opts: ShareCardOptions): string {
     wrapText(ctx, opts.tagline, W / 2, 1440, 820, 60);
   }
 
-  // Footer CTA
+  // Footer CTA + brand — every shared card is a little softncute ad
   ctx.fillStyle = '#ffb3c8';
   ctx.font = '600 46px system-ui, sans-serif';
-  ctx.fillText('💞 Check your own match', W / 2, 1780);
+  ctx.fillText('💞 Check your own match', W / 2, 1740);
+  ctx.fillStyle = '#ffd27d';
+  ctx.font = '700 52px Georgia, serif';
+  ctx.fillText('softncute.com', W / 2, 1820);
 
   return canvas.toDataURL('image/png');
 }

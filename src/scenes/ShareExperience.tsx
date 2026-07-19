@@ -58,7 +58,7 @@ export function ShareExperience() {
     haptic('success');
     incShare();
     track('Share');
-    const text = `We’re a ${results?.score ?? 92}% match 💞 Check yours!`;
+    const text = `We’re a ${results?.score ?? 92}% match 💞 Check yours on softncute.com!`;
     try {
       if (img && typeof navigator !== 'undefined' && 'canShare' in navigator) {
         const blob = await (await fetch(img)).blob();
@@ -105,6 +105,8 @@ export function ShareExperience() {
           <span>📸 1.2M shared</span>
           <span>·</span>
           <span>💌 Tag your match</span>
+          <span>·</span>
+          <span className="gold-text">softncute.com</span>
         </motion.div>
       </motion.div>
 

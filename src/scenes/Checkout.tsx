@@ -92,7 +92,7 @@ export function Checkout() {
       </div>
 
       <div className="mt-4 text-center text-xs text-muted">
-        🔒 Encrypted & secure · This is a simulated demo checkout
+        🔒 Encrypted & secure · softncute.com · simulated demo checkout
       </div>
 
       <StickyCta caption="↩️ 100% money-back promise">

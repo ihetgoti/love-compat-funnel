@@ -212,6 +212,20 @@ export function DobPicker() {
             <div className="mt-3 text-center text-sm font-semibold text-blush">
               ✨ {prettyDate(toISO(date))} · {sign.name} {sign.glyph}
             </div>
+
+            {/* Let returning users change their own birthday too. */}
+            {!isYou && !advancing ? (
+              <button
+                type="button"
+                onClick={() => {
+                  haptic('tap');
+                  setStage('you');
+                }}
+                className="tap mx-auto mt-3 block text-xs font-semibold text-muted underline-offset-2 hover:underline"
+              >
+                ‹ Edit your own birthday
+              </button>
+            ) : null}
           </motion.div>
         </AnimatePresence>
 

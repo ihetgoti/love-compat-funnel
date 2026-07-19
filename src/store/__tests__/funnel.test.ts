@@ -57,6 +57,31 @@ describe('funnel store integration', () => {
     expect(get().currencyChosen).toBe(true);
   });
 
+  it('invalidates computed results + report when an earlier answer is changed', () => {
+    const s = get();
+    s.setRelationship('crush');
+    s.setYou({ name: 'Ava', gender: 'female', dob: '1996-05-10' });
+    s.setPartner({ name: 'Liam', gender: 'male', dob: '1994-09-22' });
+    s.compute();
+    expect(get().results).toBeTruthy();
+
+    // Going back and changing a quiz answer must clear stale results + report
+    get().setAnswer('motivation', 'curious');
+    expect(get().results).toBeNull();
+    expect(get().report).toBeNull();
+
+    // Same for changing the relationship type…
+    get().compute();
+    expect(get().results).toBeTruthy();
+    get().setRelationship('married');
+    expect(get().results).toBeNull();
+
+    // …and a birthday
+    get().compute();
+    get().setPartner({ dob: '1990-01-01' });
+    expect(get().results).toBeNull();
+  });
+
   it('tracks chapter reads (deduped) and upsell decline', () => {
     get().openChapter('soulmate');
     get().openChapter('soulmate');

@@ -18,14 +18,15 @@ export function Analysis() {
   const you = useQuizStore((s) => s.you);
   const partner = useQuizStore((s) => s.partner);
   const compute = useQuizStore((s) => s.compute);
-  const results = useQuizStore((s) => s.results);
   const next = useQuizStore((s) => s.next);
   const [i, setI] = useState(0);
   const advanced = useRef(false);
   const total = ANALYSIS_BEATS.length;
 
   useEffect(() => {
-    if (!results) compute(); // safety net
+    // Always recompute: the user may have gone back and changed answers, and
+    // the engine is deterministic — same inputs cost nothing, new inputs matter.
+    compute();
     haptic('reveal');
     const id = setInterval(() => {
       setI((p) => {

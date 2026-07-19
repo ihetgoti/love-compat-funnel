@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SceneShell } from '@/components/ui/SceneShell';
 import { StickyCta } from '@/components/ui/StickyCta';
 import { Button } from '@/components/ui/Button';
+import { BrandMark } from '@/components/ui/BrandMark';
 import { AuraRing } from '@/art/AuraRing';
 import { Avatar } from '@/art/Avatar';
 import { Mascot } from '@/art/Mascot';
@@ -273,6 +274,9 @@ export function FinalReport() {
   return (
     <SceneShell>
       <motion.div variants={staggerContainer} initial="initial" animate="animate">
+        <motion.div variants={riseItem} className="mb-1 flex justify-center">
+          <BrandMark />
+        </motion.div>
         <motion.div variants={riseItem} className="text-center text-sm font-semibold text-blush">
           {report?.title ?? 'Your Full Love Report'} 💞
         </motion.div>

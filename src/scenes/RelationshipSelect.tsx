@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { RELATIONSHIP_TYPES, type RelationshipTypeId } from '@/content/relationshipTypes';
 import { ChoiceCard } from '@/components/ui/ChoiceCard';
 import { SceneShell } from '@/components/ui/SceneShell';
+import { BrandMark } from '@/components/ui/BrandMark';
 import { Mascot } from '@/art/Mascot';
 import { SpeechBubble } from '@/art/SpeechBubble';
 import { useQuizStore } from '@/store/useQuizStore';
@@ -19,20 +20,33 @@ export function RelationshipSelect() {
   const next = useQuizStore((s) => s.next);
   const current = useQuizStore((s) => s.relationshipType);
   const [picked, setPicked] = useState<RelationshipTypeId | null>(current);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
+
+  // Re-selection is always allowed (users coming back to change their answer).
+  // A quick second tap just replaces the choice and restarts the short advance.
   const choose = (id: RelationshipTypeId) => {
-    if (picked) return;
     setPicked(id);
     setRelationship(id);
     start();
     track('QuizStart', { relationship: id });
     haptic('success');
-    setTimeout(() => next(), 460);
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => next(), 460);
   };
 
   return (
     <SceneShell>
       <ScrollHint />
+      <motion.div variants={riseItem} initial="initial" animate="animate" className="mb-2 flex justify-center">
+        <BrandMark size="md" />
+      </motion.div>
       <motion.div variants={riseItem} initial="initial" animate="animate" className="mb-3 flex items-end gap-2">
         <Mascot name="cupid" mood="wink" size={62} />
         <SpeechBubble tail="left" className="mb-1">

@@ -118,13 +118,31 @@ export const useQuizStore = create<QuizState>()(
           return { step: prev, history: hist };
         }),
 
-      setRelationship: (id) => set({ relationshipType: id }),
+      // Any change to an earlier answer/profile invalidates the computed results
+      // AND the backend-generated report, so going back to edit always produces
+      // fresh content on the next pass (Analysis recomputes, report refetches).
+      setRelationship: (id) =>
+        set((s) => ({
+          relationshipType: id,
+          ...(s.results ? { results: null, report: null } : {}),
+        })),
 
       setAnswer: (questionId, value) =>
-        set((s) => ({ answers: { ...s.answers, [questionId]: value } })),
+        set((s) => ({
+          answers: { ...s.answers, [questionId]: value },
+          ...(s.results ? { results: null, report: null } : {}),
+        })),
 
-      setYou: (patch) => set((s) => ({ you: { ...s.you, ...patch } })),
-      setPartner: (patch) => set((s) => ({ partner: { ...s.partner, ...patch } })),
+      setYou: (patch) =>
+        set((s) => ({
+          you: { ...s.you, ...patch },
+          ...(s.results ? { results: null, report: null } : {}),
+        })),
+      setPartner: (patch) =>
+        set((s) => ({
+          partner: { ...s.partner, ...patch },
+          ...(s.results ? { results: null, report: null } : {}),
+        })),
 
       compute: () => {
         const { you, partner, relationshipType, answers } = get();

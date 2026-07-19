@@ -18,14 +18,17 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Are You Two Meant To Be? 💞',
+  metadataBase: new URL('https://softncute.com'),
+  title: 'softncute — Are You Two Meant To Be? 💞',
   description:
-    'Discover your true love compatibility in 60 magical seconds. A personal, cinematic reading made just for you and them.',
-  applicationName: 'Love Compatibility',
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Love Match' },
+    'Discover your true love compatibility in 60 magical seconds. A personal, cinematic reading made just for you and them — only on softncute.com.',
+  applicationName: 'softncute',
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'softncute' },
   formatDetection: { telephone: false, email: false, address: false },
   openGraph: {
-    title: 'Are You Two Meant To Be? 💞',
+    siteName: 'softncute',
+    url: 'https://softncute.com',
+    title: 'softncute — Are You Two Meant To Be? 💞',
     description: 'Discover your true love compatibility in 60 magical seconds.',
     type: 'website',
   },
